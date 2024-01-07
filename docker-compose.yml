@@ -1,0 +1,9 @@
+---
+version: '3.4'
+services:
+  litedms:
+    image: ghcr.io/prantlf/litedms:0.0.1
+    ports:
+      - 8020:8020
+    volumes:
+      - ./storage:/litedms/storage
