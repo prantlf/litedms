@@ -28,8 +28,15 @@ jobs:
 
     - run: make check
 
-    - uses: docker/metadata-action@v5
+    - uses: prantlf/finish-release-action@v1
       if: steps.bump.outputs.bumped == 'true'
+      with:
+        no-archives: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - uses: docker/metadata-action@v5
+      if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
       id: meta
       with:
         images: |
@@ -40,28 +47,20 @@ jobs:
           type=semver,pattern={{major}}
 
     - uses: docker/login-action@v3
-      if: steps.bump.outputs.bumped == 'true'
+      if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
       with:
         registry: ghcr.io
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
     - uses: docker/build-push-action@v5
-      if: steps.bump.outputs.bumped == 'true'
+      if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
       with:
         push: true
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
 
     - uses: docker/build-push-action@v5
-      if: steps.bump.outputs.bumped != 'true'
+      if: github.event_name != 'push' || !contains(github.ref, 'refs/tags/')
       with:
         push: false
-
-    - uses: prantlf/finish-release-action@v1
-      if: steps.bump.outputs.bumped == 'true'
-      with:
-        no-node: true
-        no-archives: true
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
