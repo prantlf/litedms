@@ -10,10 +10,12 @@ RUN apt-get update -y && apt-get upgrade -y && \
 WORKDIR /opt/vlang
 RUN git clone https://github.com/vlang/v /opt/vlang
 RUN make && ./v -version
-
 ENV PATH /opt/vlang:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-ADD Makefile data src v.mod
-RUN cd /src && make RELEASE=1 && ./litedms -V
+
+WORKDIR /src
+ADD Makefile data src v.mod /src
+RUN v install
+RUN make RELEASE=1
 
 FROM busybox
 
