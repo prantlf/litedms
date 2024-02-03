@@ -1,12 +1,18 @@
-import picohttpparser { Request, Response }
+import net.http { Request, Response }
 import config { Opts }
 import helpers {
 	common_headers,
+	content_html,
+	content_json,
+	content_plain,
+	content_yaml,
 	cors_headers,
 	fail,
 	http_201,
 	http_204,
+	http_404,
 	http_405,
+	http_ok,
 	no_content,
 	preflight,
 	respond_body,
@@ -26,17 +32,24 @@ const get_only = 'GET'
 const head_get_put_delete = 'HEAD, GET, PUT, DELETE'
 const post_only = 'POST'
 
-fn route(data voidptr, req Request, mut res Response) {
-	reset_ticking()
-	println('${req.method} ${req.path}')
+struct Router {
+	opts    &Opts
+	stopper chan bool
+}
 
-	opts := unsafe { &Opts(data) }
-	path := req.path
+fn (r Router) handle(req Request) Response {
+	reset_ticking()
+	method := req.method
+	path := req.url
+	println('${method} ${path}')
+
+	opts := r.opts
+	mut res := Response{}
 
 	if path == '/' {
-		match req.method {
-			'GET' {
-				res.http_ok()
+		match method {
+			.get {
+				http_ok(mut res)
 				respond_json(req, mut res, routes.root, get_only, opts)
 			}
 			else {
@@ -44,8 +57,8 @@ fn route(data voidptr, req Request, mut res Response) {
 			}
 		}
 	} else if path == '/ping' {
-		match req.method {
-			'GET' {
+		match method {
+			.get {
 				http_204(mut res)
 				common_headers(mut res)
 				cors_headers(req, mut res, get_only, opts)
@@ -56,16 +69,15 @@ fn route(data voidptr, req Request, mut res Response) {
 			}
 		}
 	} else if path == '/shutdown' {
-		match req.method {
-			'POST' {
+		match method {
+			.post {
 				http_204(mut res)
 				common_headers(mut res)
 				cors_headers(req, mut res, post_only, opts)
 				no_content(mut res)
-				res.end()
-				exit(0)
+				r.stopper <- true
 			}
-			'OPTIONS' {
+			.options {
 				preflight(req, mut res, post_only, opts)
 			}
 			else {
@@ -73,11 +85,11 @@ fn route(data voidptr, req Request, mut res Response) {
 			}
 		}
 	} else if path == '/docs' {
-		match req.method {
-			'GET' {
-				res.http_ok()
+		match method {
+			.get {
+				http_ok(mut res)
 				common_headers(mut res)
-				res.html()
+				content_html(mut res)
 				respond_body(req, mut res, routes.docs, opts)
 			}
 			else {
@@ -85,12 +97,12 @@ fn route(data voidptr, req Request, mut res Response) {
 			}
 		}
 	} else if path == '/openapi' {
-		match req.method {
-			'GET' {
-				res.http_ok()
+		match method {
+			.get {
+				http_ok(mut res)
 				common_headers(mut res)
 				cors_headers(req, mut res, get_only, opts)
-				res.content_type('application/yaml')
+				content_yaml(mut res)
 				respond_body(req, mut res, routes.openapi, opts)
 			}
 			else {
@@ -98,21 +110,21 @@ fn route(data voidptr, req Request, mut res Response) {
 			}
 		}
 	} else if path == '/texts' {
-		match req.method {
-			'GET' {
+		match method {
+			.get {
 				typ, content := list_texts(req)
-				res.http_ok()
+				http_ok(mut res)
 				common_headers(mut res)
 				cors_headers(req, mut res, post_only, opts)
 				match typ {
 					.plain {
-						res.plain()
+						content_plain(mut res)
 					}
 					.html {
-						res.html()
+						content_html(mut res)
 					}
 					.json {
-						res.json()
+						content_json(mut res)
 					}
 				}
 				respond_body(req, mut res, content, opts)
@@ -122,8 +134,8 @@ fn route(data voidptr, req Request, mut res Response) {
 			}
 		}
 	} else if path.starts_with('/texts/') {
-		match req.method {
-			'HEAD' {
+		match method {
+			.head {
 				if _ := check_text(unescape_url_path(path[7..])) {
 					http_204(mut res)
 					common_headers(mut res)
@@ -133,18 +145,18 @@ fn route(data voidptr, req Request, mut res Response) {
 					fail(req, mut res, err, head_get_put_delete, opts)
 				}
 			}
-			'GET' {
+			.get {
 				if content := read_text(unescape_url_path(path[7..])) {
-					res.http_ok()
+					http_ok(mut res)
 					common_headers(mut res)
 					cors_headers(req, mut res, head_get_put_delete, opts)
-					res.plain()
+					content_plain(mut res)
 					respond_body(req, mut res, content, opts)
 				} else {
 					fail(req, mut res, err, head_get_put_delete, opts)
 				}
 			}
-			'PUT' {
+			.put {
 				if updated := write_text(unescape_url_path(path[7..]), req) {
 					if updated {
 						http_204(mut res)
@@ -158,7 +170,7 @@ fn route(data voidptr, req Request, mut res Response) {
 					fail(req, mut res, err, head_get_put_delete, opts)
 				}
 			}
-			'DELETE' {
+			.delete {
 				if _ := delete_text(unescape_url_path(path[7..])) {
 					http_204(mut res)
 					common_headers(mut res)
@@ -173,10 +185,10 @@ fn route(data voidptr, req Request, mut res Response) {
 			}
 		}
 	} else {
-		res.http_404()
+		http_404(mut res)
 	}
 
+	res.set_version(.v1_1)
 	log_str('flushing the response')
-	res.end()
-	log_str('request processed')
+	return res
 }

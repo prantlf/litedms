@@ -2,14 +2,13 @@ module routes
 
 import compress.gzip { compress, decompress }
 import encoding.html { escape }
-import net.http { CommonHeader }
-import picohttpparser { Request }
+import net.http { Request }
 import os { exists, join_path_single, ls, read_file, rm, write_file_array }
 import sync { new_rwmutex }
 import prantlf.json { marshal }
 import prantlf.strutil { index }
 import debug { is_logging, log, log_str }
-import helpers { escape_file_path, escape_url_path, get_header, unescape_file_path }
+import helpers { escape_file_path, escape_url_path, unescape_file_path }
 
 pub enum TextResult {
 	plain
@@ -40,7 +39,7 @@ pub fn list_texts(req &Request) (TextResult, string) {
 	ids := data.keys()
 	data_guard.runlock()
 
-	if accept := get_header(req, .accept) {
+	if accept := req.header.get(.accept) {
 		txt := check_accept(accept, 'text/plain')
 		htm := check_accept(accept, 'text/html')
 		app := check_accept(accept, 'application/')
@@ -205,8 +204,8 @@ fn limit_text(text string) string {
 }
 
 fn receive_body(req &Request) !string {
-	body := req.body
-	if encoding := get_header(req, CommonHeader.content_encoding) {
+	body := req.data
+	if encoding := req.header.get(.content_encoding) {
 		if encoding == 'gzip' {
 			log('compressed %d bytes received', body.len)
 			decompressed := decompress(body.bytes()) or {
