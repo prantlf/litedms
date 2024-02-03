@@ -18,3 +18,8 @@ pub fn log_str(s string) {
 pub fn is_logging() bool {
 	return debug.d.is_enabled()
 }
+
+@[inline]
+pub fn reset_ticking() {
+	debug.d.set_ticks()
+}

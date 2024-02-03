@@ -172,7 +172,7 @@ paths:
         description: identifier of a text document
       responses:
         "204":
-          description: successful result
+          description: text found
       tags:
       - LiteDMS
       operationId: checkText
@@ -187,7 +187,7 @@ paths:
         description: identifier of a text document
       responses:
         "200":
-          description: successful result
+          description: text sent
           content:
             text/plain:
               examples:
@@ -221,8 +221,10 @@ paths:
 
                   A tall human tribesman strides through a blizzard, ...
       responses:
+        "201":
+          description: text created
         "204":
-          description: successful result
+          description: text updated
       tags:
       - LiteDMS
       operationId: createText
@@ -237,7 +239,7 @@ paths:
         description: identifier of a text document
       responses:
         "204":
-          description: successful result
+          description: text deleted
       tags:
       - LiteDMS
       operationId: deleteText

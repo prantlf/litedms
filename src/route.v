@@ -13,7 +13,7 @@ import helpers {
 	respond_json,
 	unescape_url_path,
 }
-import debug { log_str }
+import debug { log_str, reset_ticking }
 import routes {
 	check_text,
 	delete_text,
@@ -27,6 +27,7 @@ const head_get_put_delete = 'HEAD, GET, PUT, DELETE'
 const post_only = 'POST'
 
 fn route(data voidptr, req Request, mut res Response) {
+	reset_ticking()
 	println('${req.method} ${req.path}')
 
 	opts := unsafe { &Opts(data) }

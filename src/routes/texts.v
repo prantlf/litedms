@@ -35,6 +35,7 @@ pub fn precache_texts() ! {
 }
 
 pub fn list_texts(req &Request) (TextResult, string) {
+	log_str('listing texts')
 	data_guard.@rlock()
 	ids := data.keys()
 	data_guard.runlock()
@@ -74,6 +75,7 @@ pub fn list_texts(req &Request) (TextResult, string) {
 }
 
 pub fn check_text(id string) ! {
+	log('checking text "%s"', id)
 	data_guard.@rlock()
 	if val := data[id] {
 		if val.len > 0 {
@@ -97,6 +99,7 @@ pub fn check_text(id string) ! {
 }
 
 pub fn read_text(id string) !string {
+	log('reading text "%s"', id)
 	data_guard.@rlock()
 	if val := data[id] {
 		if val.len > 0 {
@@ -139,6 +142,7 @@ pub fn read_text(id string) !string {
 }
 
 pub fn write_text(id string, req &Request) !bool {
+	log('writing text "%s"', id)
 	body := receive_body(req)!
 
 	data_guard.@lock()
@@ -159,6 +163,7 @@ pub fn write_text(id string, req &Request) !bool {
 }
 
 pub fn delete_text(id string) ! {
+	log('deleting text "%s"', id)
 	data_guard.@lock()
 	defer {
 		data_guard.unlock()
