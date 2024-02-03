@@ -1,5 +1,5 @@
 import net.http { Server, WaitTillRunningParams }
-import os { mkdir_all }
+import os { Signal, mkdir_all, signal_opt }
 import prantlf.dotenv { load_env }
 import config { init_opts }
 import debug { log_str }
@@ -10,6 +10,16 @@ fn main() {
 		eprintln(err.msg())
 		exit(1)
 	}
+}
+
+fn stop(mut server Server, ch chan bool) {
+	log_str('stopping...')
+	ch.close()
+	server.wait_till_running(WaitTillRunningParams{}) or {
+		println('stopping failed: ${err.msg()}')
+	}
+	log_str('stopped')
+	exit(0)
 }
 
 fn run() ! {
@@ -30,5 +40,19 @@ fn run() ! {
 			stopper: stopper
 		}
 	}
+	mut server_ref := &server
+
+	signal_opt(.int, fn [stopper] (_signal Signal) {
+		stopper <- true
+	})!
+	signal_opt(.term, fn [stopper] (_signal Signal) {
+		stopper <- true
+	})!
+
+	spawn fn [mut server_ref] (ch chan bool) {
+		_ := <-ch
+		stop(mut server_ref, ch)
+	}(stopper)
+
 	server.listen_and_serve()
 }
