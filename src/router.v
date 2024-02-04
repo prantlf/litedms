@@ -12,7 +12,7 @@ import helpers {
 	http_204,
 	http_404,
 	http_405,
-	http_ok,
+	http_200,
 	no_content,
 	preflight,
 	respond_body,
@@ -49,7 +49,7 @@ fn (r Router) handle(req Request) Response {
 	if path == '/' {
 		match method {
 			.get {
-				http_ok(mut res)
+				http_200(mut res)
 				respond_json(req, mut res, routes.root, get_only, opts)
 			}
 			else {
@@ -87,7 +87,7 @@ fn (r Router) handle(req Request) Response {
 	} else if path == '/docs' {
 		match method {
 			.get {
-				http_ok(mut res)
+				http_200(mut res)
 				common_headers(mut res)
 				content_html(mut res)
 				respond_body(req, mut res, routes.docs, opts)
@@ -99,7 +99,7 @@ fn (r Router) handle(req Request) Response {
 	} else if path == '/openapi' {
 		match method {
 			.get {
-				http_ok(mut res)
+				http_200(mut res)
 				common_headers(mut res)
 				cors_headers(req, mut res, get_only, opts)
 				content_yaml(mut res)
@@ -113,7 +113,7 @@ fn (r Router) handle(req Request) Response {
 		match method {
 			.get {
 				typ, content := list_texts(req)
-				http_ok(mut res)
+				http_200(mut res)
 				common_headers(mut res)
 				cors_headers(req, mut res, post_only, opts)
 				match typ {
@@ -147,7 +147,7 @@ fn (r Router) handle(req Request) Response {
 			}
 			.get {
 				if content := read_text(unescape_url_path(path[7..])) {
-					http_ok(mut res)
+					http_200(mut res)
 					common_headers(mut res)
 					cors_headers(req, mut res, head_get_put_delete, opts)
 					content_plain(mut res)

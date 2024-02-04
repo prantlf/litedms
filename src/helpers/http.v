@@ -9,7 +9,7 @@ import config { Opts }
 import debug { is_logging, log, log_str }
 
 @[inline]
-pub fn http_ok(mut res Response) {
+pub fn http_200(mut res Response) {
 	res.set_status(.ok)
 }
 
