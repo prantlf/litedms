@@ -7,7 +7,7 @@ A tiny service for storing text documents via REST API.
 * Little code for sustainable  maintenance.
 * Easy to integrate to prototypes or small products.
 
-This storage is integrated in the lightweight AI RAG solution [literag].
+There's a [demo example] included. This storage is integrated in the lightweight AI RAG solution [literag].
 
 ## Getting Started
 
@@ -48,7 +48,7 @@ Runtime parameters of the service can be customised using the process environmen
 | LITEDMS_COMPRESSION_LIMIT | 1024    | minimum response size to get compressed [b] |
 | LITEDMS_CORS_MAXAGE       | 86400   | how long stays CORS preflighting valid [s]  |
 | LITEDMS_HOST              | 0.0.0.0 | IP address to bind the server to            |
-| LITEDMS_PORT              | 8020    | port address to bind the server to          |
+| LITEDMS_PORT              | 8020    | port number to bind the server to           |
 
 A `.env` file with environment variables will be loaded and processed automatically.
 

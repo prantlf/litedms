@@ -1,5 +1,4 @@
 import { getText } from './shared/safe-fetch.js'
-import settings from './shared/settings.json' assert { type: 'json' }
-const { serviceUrl } = settings
+import { serviceUrl } from './shared/settings.js'
 
 console.log(await getText(`${serviceUrl}/texts`))

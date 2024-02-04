@@ -1,6 +1,5 @@
 import { drop } from './shared/safe-fetch.js'
-import settings from './shared/settings.json' assert { type: 'json' }
-const { serviceUrl } = settings
+import { serviceUrl } from './shared/settings.js'
 
 let [,, group, name] = process.argv
 name = `${group}/${name}`

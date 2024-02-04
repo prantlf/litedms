@@ -2,8 +2,7 @@ import { readFile } from 'fs/promises'
 import { dirname, join } from 'path'
 import { fileURLToPath } from 'url'
 import { putText } from './shared/safe-fetch.js'
-import settings from './shared/settings.json' assert { type: 'json' }
-const { serviceUrl } = settings
+import { serviceUrl } from './shared/settings.js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const datadir = join(__dirname, '../data')

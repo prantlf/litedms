@@ -2,8 +2,7 @@ import { readFile } from 'fs/promises'
 import { join } from 'path'
 import { putText } from './shared/safe-fetch.js'
 import { enumerate } from './shared/documents.js'
-import settings from './shared/settings.json' assert { type: 'json' }
-const { serviceUrl } = settings
+import { serviceUrl } from './shared/settings.js'
 
 async function addFile(datadir, group, file) {
   const name = `${group}/${file.slice(0, -4)}`
