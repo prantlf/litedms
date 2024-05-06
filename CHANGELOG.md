@@ -1,5 +1,11 @@
 # Changes
 
+## [0.1.1](https://github.com/prantlf/litedms/compare/v0.1.0...v0.1.1) (2024-05-06)
+
+### Bug Fixes
+
+* Publish packages and docker image ([82b86f1](https://github.com/prantlf/litedms/commit/82b86f1e3f6748cc378726dd4944662d22d7a6c0))
+
 ## [0.1.0](https://github.com/prantlf/litedms/compare/v0.0.1...v0.1.0) (2024-02-05)
 
 ### Features

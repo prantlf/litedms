@@ -3,7 +3,7 @@ module config
 import os { getenv_opt }
 import strconv { atoi, parse_uint }
 
-pub const version = '0.1.0'
+pub const version = '0.1.1'
 
 pub struct Opts {
 pub mut:
