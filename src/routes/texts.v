@@ -1,6 +1,7 @@
 module routes
 
 import compress.gzip { compress, decompress }
+import config { Opts }
 import encoding.html { escape }
 import net.http { Request }
 import os { exists, join_path_single, ls, read_file, rm, write_file_array }
@@ -19,9 +20,9 @@ pub enum TextResult {
 __global data = map[string]string{}
 __global data_guard = new_rwmutex()
 
-pub fn precache_texts() ! {
+pub fn precache_texts(storage string) ! {
 	log_str('listing files in storage')
-	files := ls('storage')!
+	files := ls(storage)!
 	for file in files {
 		if file.ends_with('.txt.gz') {
 			id := unescape_file_path(file[..file.len - 7])
@@ -73,7 +74,7 @@ pub fn list_texts(req &Request) (TextResult, string) {
 	return TextResult.plain, out
 }
 
-pub fn check_text(id string) ! {
+pub fn check_text(id string, opts &Opts) ! {
 	log('checking text "%s"', id)
 	data_guard.@rlock()
 	if val := data[id] {
@@ -87,7 +88,7 @@ pub fn check_text(id string) ! {
 	}
 	data_guard.runlock()
 
-	path := get_text_path(id)
+	path := get_text_path(id, opts.storage)
 	if exists(path) {
 		log('"%s" was found', path)
 		return
@@ -97,7 +98,7 @@ pub fn check_text(id string) ! {
 	return error_with_code('"${path}" does not exist', 404)
 }
 
-pub fn read_text(id string) !string {
+pub fn read_text(id string, opts &Opts) !string {
 	log('reading text "%s"', id)
 	data_guard.@rlock()
 	if val := data[id] {
@@ -111,7 +112,7 @@ pub fn read_text(id string) !string {
 	}
 	data_guard.runlock()
 
-	path := get_text_path(id)
+	path := get_text_path(id, opts.storage)
 	if exists(path) {
 		data_guard.@lock()
 		defer {
@@ -140,7 +141,7 @@ pub fn read_text(id string) !string {
 	return error_with_code('"${path}" does not exist', 404)
 }
 
-pub fn write_text(id string, req &Request) !bool {
+pub fn write_text(id string, req &Request, opts &Opts) !bool {
 	log('writing text "%s"', id)
 	body := receive_body(req)!
 
@@ -151,7 +152,7 @@ pub fn write_text(id string, req &Request) !bool {
 	contains := id in data
 	data[id] = body
 
-	path := get_text_path(id)
+	path := get_text_path(id, opts.storage)
 	if is_logging() {
 		log_str('writing "${limit_text(body)}" to ${path}')
 	}
@@ -161,7 +162,7 @@ pub fn write_text(id string, req &Request) !bool {
 	return contains
 }
 
-pub fn delete_text(id string) ! {
+pub fn delete_text(id string, opts &Opts) ! {
 	log('deleting text "%s"', id)
 	data_guard.@lock()
 	defer {
@@ -169,7 +170,7 @@ pub fn delete_text(id string) ! {
 	}
 	data.delete(id)
 
-	path := get_text_path(id)
+	path := get_text_path(id, opts.storage)
 	if exists(path) {
 		log('"%s" was found', path)
 		rm(path)!
@@ -180,8 +181,8 @@ pub fn delete_text(id string) ! {
 }
 
 @[inline]
-fn get_text_path(id string) string {
-	return join_path_single('storage', '${escape_file_path(id)}.txt.gz')
+fn get_text_path(id string, storage string) string {
+	return join_path_single(storage, '${escape_file_path(id)}.txt.gz')
 }
 
 fn check_accept(accept string, typ string) int {

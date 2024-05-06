@@ -136,7 +136,7 @@ fn (r Router) handle(req Request) Response {
 	} else if path.starts_with('/texts/') {
 		match method {
 			.head {
-				if _ := check_text(unescape_url_path(path[7..])) {
+				if _ := check_text(unescape_url_path(path[7..]), opts) {
 					http_204(mut res)
 					common_headers(mut res)
 					cors_headers(req, mut res, head_get_put_delete, opts)
@@ -146,7 +146,7 @@ fn (r Router) handle(req Request) Response {
 				}
 			}
 			.get {
-				if content := read_text(unescape_url_path(path[7..])) {
+				if content := read_text(unescape_url_path(path[7..]), opts) {
 					http_200(mut res)
 					common_headers(mut res)
 					cors_headers(req, mut res, head_get_put_delete, opts)
@@ -157,7 +157,7 @@ fn (r Router) handle(req Request) Response {
 				}
 			}
 			.put {
-				if updated := write_text(unescape_url_path(path[7..]), req) {
+				if updated := write_text(unescape_url_path(path[7..]), req, opts) {
 					if updated {
 						http_204(mut res)
 					} else {
@@ -171,7 +171,7 @@ fn (r Router) handle(req Request) Response {
 				}
 			}
 			.delete {
-				if _ := delete_text(unescape_url_path(path[7..])) {
+				if _ := delete_text(unescape_url_path(path[7..]), opts) {
 					http_204(mut res)
 					common_headers(mut res)
 					cors_headers(req, mut res, head_get_put_delete, opts)

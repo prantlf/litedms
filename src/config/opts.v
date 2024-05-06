@@ -9,6 +9,7 @@ pub struct Opts {
 pub mut:
 	host              string = '0.0.0.0'
 	port              u16    = 8020
+	storage           string = 'storage'
 	compression_limit int    = 1024
 	cors_maxage       int    = 86400
 }
@@ -20,6 +21,9 @@ pub fn init_opts() !&Opts {
 	}
 	if port := getenv_opt('LITEDMS_PORT}') {
 		opts.port = u16(parse_uint(port, 10, 16)!)
+	}
+	if storage := getenv_opt('LITEDMS_STORAGE') {
+		opts.storage = storage
 	}
 	if compression_limit := getenv_opt('LITEDMS_COMPRESSION_LIMIT') {
 		opts.compression_limit = atoi(compression_limit)!

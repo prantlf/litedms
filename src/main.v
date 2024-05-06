@@ -28,8 +28,8 @@ fn run() ! {
 
 	println('Initialising the storage.')
 	log_str('ensuring storage directory')
-	mkdir_all('storage')!
-	precache_texts()!
+	mkdir_all(opts.storage)!
+	precache_texts(opts.storage)!
 
 	addr := '${opts.host}:${opts.port}'
 	stopper := chan bool{cap: 1}
