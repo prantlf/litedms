@@ -7,4 +7,4 @@ const {
 const host = LITEDMS_HOST === '0.0.0.0' && '127.0.0.1' || LITEDMS_HOST || '127.0.0.1'
 const port = +(LITEDMS_PORT || 8020)
 
-const serviceUrl = LITEDMS_URL || `http://${host}:${port}`
+export const serviceUrl = LITEDMS_URL || `http://${host}:${port}`
