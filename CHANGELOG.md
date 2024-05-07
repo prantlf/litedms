@@ -1,5 +1,11 @@
 # Changes
 
+## [0.2.0](https://github.com/prantlf/litedms/compare/v0.1.1...v0.2.0) (2024-05-07)
+
+### Features
+
+* Let storage directory set by LITEDMS_STORAGE ([cae9d3a](https://github.com/prantlf/litedms/commit/cae9d3a8f9b0b724fa326ee85e9525a3adf12a91))
+
 ## [0.1.1](https://github.com/prantlf/litedms/compare/v0.1.0...v0.1.1) (2024-05-06)
 
 ### Bug Fixes
