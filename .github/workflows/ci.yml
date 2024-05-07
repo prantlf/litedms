@@ -67,11 +67,6 @@ jobs:
     - run: make RELEASE=1
     - uses: prantlf/shelve-output-action@v2
       if: ${{ needs.linux.outputs.changed == 'true' }}
-    - run: make build RELEASE=1 MACOS_ARM=1
-    - uses: prantlf/shelve-output-action@v2
-      if: ${{ needs.linux.outputs.changed == 'true' }}
-      with:
-        arch: arm64
 
   macos-arm:
     if: ${{ github.ref_name == 'master' && needs.linux.outputs.changed == 'true' }}
