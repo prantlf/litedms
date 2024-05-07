@@ -19,9 +19,9 @@ For example, run a container for testing purposes exposing the port 8020 which w
 
     docker run -p 8020:8020 --rm -it ghcr.io/prantlf/litedms
 
-For example, run a container named `litedms` in the background, persisting the data in `./litedms-storage` via the volume `/litedms/storage`:
+For example, run a container named `litedms` in the background, persisting the data in `./litedms-storage` via the volume `/storage`:
 
-    docker run -p 8020:8020 -v $PWD/litedms-storage:/litedms/storage \
+    docker run -p 8020:8020 -v $PWD/litedms-storage:/storage \
       -dt --name litedms ghcr.io/prantlf/litedms
 
 ### Building from Scratch

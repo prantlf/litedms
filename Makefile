@@ -37,7 +37,7 @@ build-docker:
 	docker build -t litedms .
 
 start-docker:
-	docker run --rm -dt -p 8020:8020 -v $PWD/storage:/litedms/storage \
+	docker run --rm -dt -p 8020:8020 -v $PWD/storage:/storage \
 		--name litedms litedms
 
 kill-docker:

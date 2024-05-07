@@ -21,6 +21,7 @@ FROM busybox
 
 COPY --from=builder /src/litedms /
 
+WORKDIR /
 EXPOSE 8020
 ENTRYPOINT ["/litedms"]
 
