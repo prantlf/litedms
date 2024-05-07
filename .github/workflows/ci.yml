@@ -25,9 +25,9 @@ jobs:
       id: bump
       with:
         bump-files: src/config/opts.v
-    - uses: prantlf/shelve-changes-action@v1
+    - uses: prantlf/shelve-changes-action@v2
     - run: make
-    - uses: prantlf/shelve-output-action@v2
+    - uses: prantlf/shelve-output-action@v3
       if: ${{ steps.bump.outputs.bumped == 'true' }}
 
   linux-arm:
@@ -39,7 +39,7 @@ jobs:
     - uses: actions/checkout@v4
     - uses: prantlf/setup-v-action@v2
     - if: ${{ needs.linux.outputs.changed == 'true' }}
-      uses: prantlf/unshelve-changes-action@v1
+      uses: prantlf/unshelve-changes-action@v2
       with:
         files: ${{ needs.linux.outputs.changed-files }}
         discard-shelf: false
@@ -47,7 +47,7 @@ jobs:
         sudo apt-get update
         sudo apt-get install gcc gcc-aarch64-linux-gnu binutils-aarch64-linux-gnu
     - run: make build RELEASE=1 LINUX_ARM=1
-    - uses: prantlf/shelve-output-action@v2
+    - uses: prantlf/shelve-output-action@v3
       if: ${{ needs.linux.outputs.changed == 'true' }}
       with:
         arch: arm64
@@ -59,13 +59,13 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - uses: prantlf/setup-v-action@v2
-    - uses: prantlf/unshelve-changes-action@v1
+    - uses: prantlf/unshelve-changes-action@v2
       if: ${{ needs.linux.outputs.changed == 'true' }}
       with:
         files: ${{ needs.linux.outputs.changed-files }}
         discard-shelf: false
     - run: make RELEASE=1
-    - uses: prantlf/shelve-output-action@v2
+    - uses: prantlf/shelve-output-action@v3
       if: ${{ needs.linux.outputs.changed == 'true' }}
 
   macos-arm:
@@ -76,13 +76,13 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - uses: prantlf/setup-v-action@v2
-    - uses: prantlf/unshelve-changes-action@v1
+    - uses: prantlf/unshelve-changes-action@v2
       if: ${{ needs.linux.outputs.changed == 'true' }}
       with:
         files: ${{ needs.linux.outputs.changed-files }}
         discard-shelf: false
     - run: make build RELEASE=1 MACOS_ARM=1
-    - uses: prantlf/shelve-output-action@v2
+    - uses: prantlf/shelve-output-action@v3
       if: ${{ needs.linux.outputs.changed == 'true' }}
       with:
         arch: arm64
@@ -95,14 +95,14 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - uses: prantlf/setup-v-action@v2
-    - uses: prantlf/unshelve-changes-action@v1
+    - uses: prantlf/unshelve-changes-action@v2
       if: ${{ needs.linux.outputs.changed == 'true' }}
       with:
         files: ${{ needs.linux.outputs.changed-files }}
         discard-shelf: false
     - run: sudo apt-get install gcc-mingw-w64-x86-64
     - run: make build RELEASE=1 WINDOWS=1
-    - uses: prantlf/shelve-output-action@v2
+    - uses: prantlf/shelve-output-action@v3
       if: ${{ needs.linux.outputs.changed == 'true' }}
       with:
         os: windows
@@ -113,7 +113,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    - uses: prantlf/unshelve-changes-action@v1
+    - uses: prantlf/unshelve-changes-action@v2
       if: ${{ needs.linux.outputs.changed == 'true' }}
       with:
         files: ${{ needs.linux.outputs.changed-files }}
@@ -134,11 +134,11 @@ jobs:
     runs-on: macos-13
     steps:
     - uses: actions/checkout@v4
-    - uses: prantlf/unshelve-changes-action@v1
+    - uses: prantlf/unshelve-changes-action@v2
       with:
         files: ${{ needs.linux.outputs.changed-files }}
         discard-shelf: false
-    - uses: prantlf/unshelve-output-action@v5
+    - uses: prantlf/unshelve-output-action@v6
     - uses: prantlf/finish-release-action@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -151,7 +151,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    - uses: prantlf/unshelve-changes-action@v1
+    - uses: prantlf/unshelve-changes-action@v2
       with:
         files: ${{ needs.linux.outputs.changed-files }}
     - uses: docker/metadata-action@v5
