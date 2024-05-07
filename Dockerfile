@@ -26,4 +26,4 @@ EXPOSE 8020
 ENTRYPOINT ["/litedms"]
 
 HEALTHCHECK --interval=5m \
-  CMD curl -X GET -s -w "%{http_code}" http://localhost:8020/ping || exit 1
+  CMD curl -f http://localhost:8020/ping || exit 1

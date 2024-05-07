@@ -86,6 +86,7 @@ Remaining [scripts] demonstrate other use cases for the REST API. They have no p
 | delete-documents.js               | delete all documents found on the disk     |
 | get-document.js <group> <file>    | print contents of a document               |
 | list-documents.js                 | list names of all documents in hte storage |
+| ping.js                           | checks if the server is running            |
 | shutdown.js                       | shuts down the service                     |
 | upload-document.js <group> <file> | uploads a document                         |
 | upload-documents.js               | uploads all documents found on the disk    |

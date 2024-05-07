@@ -16,6 +16,14 @@ export async function drop(url) {
   return fetchSafely(url, { method: 'DELETE' })
 }
 
+export async function getJson(url, method = 'GET') {
+  const res = await fetchSafely(url, {
+    method,
+    headers: { Accept: 'application/json' }
+  })
+  return res.json()
+}
+
 export async function postJson(url, body, method = 'POST') {
   return fetchSafely(url, {
     method,

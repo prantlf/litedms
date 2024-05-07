@@ -30,6 +30,9 @@ clean:
 start:
 	./litedms &
 
+ping:
+	curl -s -w "%{http_code}" http://localhost:8020/ping
+
 stop:
 	curl -X POST -s -w "%{http_code}" http://localhost:8020/shutdown
 
