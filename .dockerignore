@@ -1,7 +1,15 @@
 .DS_Store
+.dockerignore
+.env
+.git
 .github
+.gitignore
+.hadolint.yaml
+.vscode
+CHANGELOG.md
+Dockerfile
+LICENSE
+README.md
 docs
 scripts
 storage
-CHANGELOG.md
-README.md

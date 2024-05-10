@@ -36,15 +36,36 @@ ping:
 stop:
 	curl -X POST -s -w "%{http_code}" http://localhost:8020/shutdown
 
-build-docker:
+docker: docker-lint docker-build
+
+docker-lint:
+	docker run --rm -i \
+		-v ${PWD}/.hadolint.yaml:/bin/hadolint.yaml \
+		-e XDG_CONFIG_HOME=/bin hadolint/hadolint \
+		< Dockerfile
+
+docker-build:
 	docker build -t litedms .
 
-start-docker:
-	docker run --rm -dt -p 8020:8020 -v $PWD/storage:/storage \
+docker-start:
+	docker run --rm -dt -p 8020:8020 -v ${PWD}/storage:/storage \
 		--name litedms litedms
 
-kill-docker:
+docker-enter:
+	docker run --rm -it -p 8020:8020 -v ${PWD}/storage:/storage \
+		--entrypoint sh litedms
+
+docker-kill:
 	docker container kill litedms
 
-logs-docker:
+docker-log:
 	docker logs litedms
+
+docker-up:
+	IMAGE_HUB= docker compose -f docker-compose.yml up -d
+
+docker-down:
+	IMAGE_HUB= docker compose -f docker-compose.yml down
+
+docker-log1:
+	docker logs litedms-litedms-1

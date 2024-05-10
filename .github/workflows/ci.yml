@@ -26,7 +26,7 @@ jobs:
       with:
         bump-files: src/config/opts.v
     - uses: prantlf/shelve-changes-action@v2
-    - run: make
+    - run: make RELEASE=1
     - uses: prantlf/shelve-output-action@v3
       if: ${{ steps.bump.outputs.bumped == 'true' }}
 
