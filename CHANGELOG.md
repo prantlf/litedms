@@ -1,5 +1,19 @@
 # Changes
 
+## [0.3.0](https://github.com/prantlf/litedms/compare/v0.2.0...v0.3.0) (2024-05-10)
+
+### Features
+
+* Move mappable storage volume from /litedms/storage to /storage ([4c501aa](https://github.com/prantlf/litedms/commit/4c501aa7b90a3d686f5137237ea3708370b3a76d))
+* Support method HEAD for /ping ([d2e4250](https://github.com/prantlf/litedms/commit/d2e42502999970fc4a4a7dc84a96902cc0fc3922))
+* Add healthcheck to docker-compose example ([4879aec](https://github.com/prantlf/litedms/commit/4879aec97fa807d12787371c7fe5ae215b349c25))
+
+### BREAKING CHANGES
+
+Replace the target volume mapping `/litedms/storage`
+with the new value `/storage`. (Internally, the executable moved from
+`/litedms/litedms` to `/litedms`.
+
 ## [0.2.0](https://github.com/prantlf/litedms/compare/v0.1.1...v0.2.0) (2024-05-07)
 
 ### Features
