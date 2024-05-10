@@ -58,7 +58,7 @@ fn (r Router) handle(req Request) Response {
 		}
 	} else if path == '/ping' {
 		match method {
-			.get {
+			.get, .head {
 				http_204(mut res)
 				common_headers(mut res)
 				cors_headers(req, mut res, get_only, opts)

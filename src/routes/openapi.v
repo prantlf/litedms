@@ -99,6 +99,15 @@ paths:
       operationId: openAPI
       x-swagger-router-controller: LiteDMS
   /ping:
+    get:
+      summary: check that the service is running
+      responses:
+        "204":
+          description: successful result
+      tags:
+      - LiteDMS
+      operationId: ping
+      x-swagger-router-controller: LiteDMS
     head:
       summary: check that the service is running
       responses:
